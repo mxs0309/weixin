@@ -1,0 +1,29 @@
+{
+  "name": "newserve",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "encodeurl": "^1.0.2",
+    "express": "~4.16.0",
+    "express-session": "^1.15.6",
+    "http-errors": "~1.6.2",
+    "inherits": "^2.0.3",
+    "jade": "~1.11.0",
+    "md5": "^2.2.1",
+    "mongoose": "^5.2.15",
+    "morgan": "~1.9.0",
+    "ms": "^2.1.1",
+    "nodemailer": "^4.6.8",
+    "path-to-regexp": "^2.4.0",
+    "socket.io": "^2.1.1",
+    "socket.io-redis": "^5.2.0",
+    "statuses": "^1.5.0",
+    "underscore": "^1.9.1"
+  }
+}
