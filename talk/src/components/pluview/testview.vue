@@ -40,67 +40,9 @@ export default {
   methods:{
       send(){ 
           this.$socket.emit('private',this.from,this.to,this.msg);
-         }},
-         
-          beforeMount(){
-             this.$socket.on('to'+this.from,(data) => {
-                this.mess = data.msg;
-                // console.log(this.mess);
-                this.fastman = data.from;
-                this.quest = {mess:this.mess,fastman:this.fastman}
-
-                console.log(this.quest);
-                //当前前台拿到的对象是 quest
-               //  //当前后台拿到的数组是 newsz
-               //  var arr = [];
-               //  var peoples =this.newsz;
-               // //把后台拿回来的发送者手机号遍历一遍放到arr里
-               // for(let val of peoples){
-               //    arr.push(val.fastman)
-               //  }
-               // var newArr2 = [];
-               // if(arr.indexOf(this.quest.fastman) == -1){
-               //    arr.push(this.quest.fastman);
-               //    newArr2.push(this.quest);
-               //    this.newsz = newArr2;
-               //  }else{
-               //    alert("您已经发送过，请不要连续发送")
-               //  }
-               },
-            //   this.$axios({
-            //   url: "http://localhost:3000/relist",
-            //   method: "post",
-            //   data: qs.stringify({
-            //     phone: localStorage.getItem("phone"),
-            //     quest:this.quest
-            //    })
-            //  })
-            // .then((res) => {
-            //   this.newsz = res.data.list
-            //   console.log(res.data.list)
-            // })
-            // .catch((err) => {
-            //   console.log(err)
-            //  })
-          );
-             //做ajax把新数组更新存起来   
-        },
-        mounted(){
-            //  this.$axios({
-            //   url: "http://localhost:3000/updatareqlist",
-            //   method: "post",
-            //   data: qs.stringify({
-            //     phone: localStorage.getItem("phone"),
-                
-            //    })
-            //  })
-            // .then((res) => {
-            //   console.log(res)
-            // })
-            // .catch((err) => {
-            //   console.log(err)
-            //  })
-        }   
+          this.msg = "";
+         }
+       }
 }
 </script>
 

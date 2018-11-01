@@ -7,7 +7,7 @@
   </router-link>
   </mt-button>
 </mt-header>
-     <ul>
+     <ul style="margin-top: 4rem">
        <li>
         <div class="mark1">
           <div class="word">头像</div>

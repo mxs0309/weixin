@@ -23,24 +23,31 @@
       </ul>
      
     </div>
-      <mt-index-section index="S">
-        <mt-cell :title="msg" :to="{path:'/tianjia/'+msg}">
-           <img slot="icon" :src="url" width="40" height="40">
-        </mt-cell>
-      </mt-index-section>
-     
+    <div class="friendlist">
+      <div  v-for="item in myfriendList">
+        <router-link :to="{path:'/tianjia/'+item.phone}">
+          <div class="flex" >
+          <img :src="url">
+          <p>{{item.nickname}}</p>
+        </div>
+        </router-link> 
+        
+      </div>
+      
+    </div>
     </mt-index-list> 
   </div>
 </template>
 
 <script>
-
+import axios from 'axios'
+import qs from 'qs'
 export default {
   name: 'Talk',
   data () {
     return {
-       msg:'顺其自然',
-       url:require("../../assets/1.jpg")
+       url: require("../../assets/1.jpg"),
+       myfriendList:[]
     }
   },
   methods:{
@@ -49,13 +56,52 @@ export default {
             path:'/newfriend',
             home:'Newfriend'
           })
+    },
+    nick(){
+      
     }
-
+  },
+  created(){
+     this.$axios({
+                    url: "http://localhost:3000/relist",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone")
+                   })
+                 })
+               .then((res) => {
+                   console.log(res.data.xinxi.friendList)
+                  this.myfriendList = res.data.xinxi.friendList;
+               })
+            .catch((err) => {
+              console.log(err)
+             });
   }
 }
 </script>
 
 <style scoped>
+.flex{
+  justify-content: flex-start;
+    align-items:center;
+    display: flex;
+    color: black;
+}
+a{
+  text-decoration: none;
+}
+.flex img{
+  margin: 0.5rem
+}
+.friendlist{
+  margin-top: 15px;
+  width: 100%;
+  background-color: white;
+}
+.friendlist img{
+  width: 2.5rem;
+  height: 2.5rem;
+}
 .talk{
   margin-top: 3.5rem;
 }
@@ -69,9 +115,9 @@ ul{
   padding: 0;
   margin:0;
 }
-.tiltle{
-  margin-left:0.5rem;
-}
+/*.tiltle{
+  padding-left:0.5rem;
+}*/
 .tiltle li{
   border-bottom: 1px solid #ddd;
   background: white;
@@ -81,7 +127,7 @@ ul li span{
 }
 ul li img{
   vertical-align: middle;
-  margin:0.5rem 0;
+  margin:0.5rem;
   width: 2.5rem;
   height: 2.5rem;
 }

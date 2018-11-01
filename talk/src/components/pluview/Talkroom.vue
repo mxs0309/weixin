@@ -7,33 +7,16 @@
 </mt-header>
   <div class="top">
      <div v-for="talkresult in array" class="talkjilu" :class="talkresult?'block':'none'">
-  <div class="talkjilu1">
+     <div :class="talkresult.emit?'talkjilu1':'talkjilu2'">
      <img :src="url">
-   <div class="send">
-   <div class="arrow" ></div>
-      <span>{{talkresult}}</span>
+   <div class="send" :class="talkresult.emit?'send1':'send2'">
+   <div :class="talkresult.emit?'arrow':'arrow2'"></div>
+      <span>{{talkresult.talkres}}</span>
    </div>
   </div>
   
- </div>
+     </div>
   </div>
-
-
-
- <div class="talkjilu" :class="talkresult?'block':'none'">
-  <div class="talkjilu2">
-    <img :src="url">
-    
-   <div class="send">
-   <div class="arrow2" ></div>
-      <span>{{talkresult}}</span>
-   </div>
-  </div>
-  
- </div>
-
-  
-
 <div class="yanzheng">
     <div class="testbox">
       <input type="text" name="talkres" v-model="talkres">
@@ -45,31 +28,194 @@
 </template>
 
 <script>
-
+import axios from 'axios'
+import qs from 'qs'
 export default {
   name: 'Talkroom',
   data () {
     return {
         msg:this.$route.query.msg,
+        from:localStorage.getItem("phone"),
+        to:this.$route.query.weixinnum,
+        nickname:"",
         talkres:"",
         talkresult:"",
         talkresult2:"",
         url:require("../../assets/1.jpg"),
         url2:"",
-        array:[]
+        array:[],
+        friendtalk:{},
+        talkarray:[],
+        friendhetalk:{},
+        talkhearray:[]
     }
   },
   methods:{
-    send(){
-        this.array.push(this.talkres);
-        this.talkres=""
-        console.log(this.array)
-    }
+     send(){ 
+          this.$socket.emit('other',this.from,this.to,this.talkres);
+          this.array.push({talkres:this.talkres,emit:true});
+           this.$axios({
+                    url: "http://localhost:3000/relist",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone")
+                   })
+                 })
+               .then((res) => {
+                  this.talkarray = res.data.xinxi.talkList;
+                  console.log(this.talkarray);                
+               })
+            .catch((err) => {
+              console.log(err)
+             });
+            
+              this.friendtalk = {nickname:this.$route.query.msg,talkres:this.talkres,phone:this.$route.query.weixinnum};
+                   if (!this.talkarray.length){
+                     this.talkarray.push(this.friendtalk);
+                     console.log(this.talkarray)
+                   }
+                    for (let i = 0;i<this.talkarray.length; i++) {
+                  if(this.talkarray[i].nickname === this.friendtalk.nickname) {
+                            this.talkarray[i] = this.friendtalk;
+                            console.log(this.talkarray);
+                          }
+                          else{
+                            this.talkarray.push(this.friendtalk);
+                             console.log(this.talkarray)
+                          }
+                }
+
+          //更新聊天列表
+          this.$axios({
+                    url: "http://localhost:3000/talkList",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone"),
+                      talkarray: JSON.stringify(this.talkarray)
+                   })
+                 })
+               .then((res) => {
+                  console.log(res)               
+               })
+            .catch((err) => {
+              console.log(err)
+             });
+
+
+
+          this.$axios({
+                    url: "http://localhost:3000/talkhistory",
+                    method: "post",
+                    data: qs.stringify({
+                       phone: localStorage.getItem("phone"),
+                       array: JSON.stringify(this.array)   //点击添加后存手机号码到当前用户的好友列表数据库
+                   })
+                    
+                    }) 
+                    .then((res)=>{
+                      console.log(this.array);
+                      console.log(res)
+                    })
+                    .catch((err)=>{
+                      console.log(err)
+                    });
+                    this.talkres=""
+         },
+         back(){
+        this.$router.push({
+          path: '/wxview',
+          home: 'wxview'
+        })
+
+         }
       
   },
+  beforeMount(){
+    this.$axios({
+                 url: "http://localhost:3000/relist",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone")
+                   })
+                 })
+               .then((res) => {
+                 console.log(res.data.xinxi.history);
+                 this.array = res.data.xinxi.history;
+               })
+               .catch((err) => {
+                 console.log(err)
+               });  
+  },
   mounted(){
-      
+        this.$socket.on('to'+this.from,(data) => {
+                this.talkres = data.talkres;
+                console.log(this.talkres); 
+                this.array.push({talkres:this.talkres,emit:false});
+                this.$axios({
+                    url: "http://localhost:3000/talkhistory",
+                    method: "post",
+                    data: qs.stringify({
+                       phone: localStorage.getItem("phone"),
+                       array: JSON.stringify(this.array)   
+                   })
+                  }) 
+                    .then((res)=>{
+                      console.log(this.array);
+                      console.log(res)
+                    })
+                    .catch((err)=>{
+                      console.log(err)
+                    });
 
+
+                   this.$axios({
+                    url: "http://localhost:3000/relist",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone")
+                   })
+                 })
+               .then((res) => {
+                  this.talkarray = res.data.xinxi.talkList;
+          
+               })
+            .catch((err) => {
+              console.log(err)
+             });
+            this.friendhetalk = {nickname:this.$route.query.msg,talkres:this.talkres,phone:this.$route.query.weixinnum};
+              console.log(this.friendhetalk);                 
+
+               if (!this.talkarray.length){
+                     this.talkarray.push(this.friendhetalk);
+                     console.log(this.talkarray)
+                   }
+                    for (let i = 0;i<this.talkarray.length; i++) {
+                  if(this.talkarray[i].nickname === this.friendhetalk.nickname) {
+                            this.talkarray[i] = this.friendhetalk;
+                            console.log(this.talkarray);
+                          }
+                          else{
+                            this.talkarray.push(this.friendhetalk);
+                             console.log(this.talkarray)
+                          }
+                }
+                //更新聊天列表
+          this.$axios({
+                    url: "http://localhost:3000/talkList",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone"),
+                      talkarray: JSON.stringify(this.talkarray)
+                   })
+                 })
+               .then((res) => {
+                  console.log(res)               
+               })
+            .catch((err) => {
+              console.log(err)
+             });
+                   this.talkres = ''
+              });             
   }
 }
 </script>
@@ -86,10 +232,16 @@ export default {
 }
 .send{
   position: relative;
-  background: #f8c301;
+  
   border-radius:5px;
   margin:5px 15px;
 
+}
+.send1{
+  background: #26a2ff;
+}
+.send2{
+  background: #e8c301;
 }
 .send span{
   max-width: 16rem;
@@ -105,7 +257,7 @@ export default {
   height: 0;
   font-size: 0;
   border:8px solid;
-  border-color:#f5f5f5 #e8c301 #f5f5f5 #f5f5f5;
+  border-color:#f5f5f5 #26a2ff #f5f5f5 #f5f5f5;
 }
 .send .arrow2{
   position: absolute;
@@ -126,12 +278,12 @@ export default {
 
 }
 .top{
-  margin-top: 2.5rem;
-  display: block;
-  overflow: hidden;
-  word-break: break-all;
-  word-wrap: break-word;
-  padding: 0.3rem;
+    margin-top: 2.5rem;
+    display: block;
+    overflow: hidden;
+    word-break: break-all;
+    word-wrap: break-word;
+    padding: 0.3rem;
 }
 .talkjilu2{
   display: flex;

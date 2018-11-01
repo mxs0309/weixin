@@ -44,16 +44,6 @@
         user: ""
       }
     },
-    created(){
-          // 向后台发送localstorage里存的自己的手机号码
-           this.$socket.emit('setName', this.phone);
-          //后台返回一个对象，存着所有在线人员的socket.id
-          this.$socket.on('user', function (data) {
-          this.user = data;
-          console.log(this.user);
-             });
-          },
- 
     props: ['view']
   }
 </script>

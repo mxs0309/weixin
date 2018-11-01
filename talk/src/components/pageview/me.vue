@@ -5,7 +5,7 @@
      
       <div class="touphoto"><img src="../../assets/1.jpg"></div>
       <div class="info">
-        <p>昵称：{{nickname}}</p>
+        <h4>{{nickname}}</h4>
         <p>账号：{{phone}}</p>
       </div>
       <div class="erweima"><img src="../../assets/erweima.png"></div>
@@ -27,7 +27,7 @@
         <img src="../../assets/photo.png">
         <span >相册</span>
       </li>
-      <li>
+      <li style="border-bottom: 1px solid rgb(234, 232, 236)">
         <img src="../../assets/cal.png">
         <span >卡包</span>
       </li> 
@@ -80,7 +80,10 @@
 </script>
 
 <style scoped>
-
+h4{
+  margin: 0;
+  padding: 0;
+}
 ul,li{
   list-style: none;
   padding-left: 0;
@@ -98,6 +101,15 @@ ul,li{
 .top p{
   margin:0;
   color: black;
+  padding-top: 0.1rem;
+  text-decoration: none;
+}
+.top h4{
+  font-size: 18px;
+  padding-bottom: 0.1rem;
+  margin:0;
+  font-weight: normal;
+  color: black;
   text-decoration: none;
 }
 a{
@@ -114,18 +126,21 @@ a{
   margin-top: 1rem;
 }
 .footBar ul li{
-  padding: 0.7rem;
+  padding: 10px 15px;
+      position: relative;
+
+    display: -webkit-box;
   background: white;
 }
 .footBar ul li img{
-  width: 2rem;
+  width: 1.5rem;
   vertical-align: middle;
 }
 .footBar ul{
   margin-bottom: 1rem;
 }
 .footBar ul li span{
-  font-size: 1.3rem;
+  font-size: 1rem;
   vertical-align: middle;
 
 }

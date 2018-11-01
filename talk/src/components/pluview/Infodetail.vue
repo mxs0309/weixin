@@ -36,12 +36,12 @@
       </div>
     </div>
 
-    <div class="anniu">
+    <div class="anniu" v-if='an'>
       <mt-button @click.native="talk" type="primary" size="large">添加到通讯录</mt-button>
     </div>
-    <!-- <div class="anniu">
+    <div class="anniu" v-if='an1'>
       <mt-button @click.native="talkroom" type="primary" size="large">发消息</mt-button>
-    </div> -->
+    </div>
     
   </div>
 </template>
@@ -59,11 +59,15 @@ export default {
        province:"山西",
        city:"太原",
        sex:'',
-       sign:''
+       sign:'',
+       myFriendList:[],
+       an:true,
+       an1:true
     }
   },
   methods:{
        talk(){
+
           this.$router.push({
             path:'/testview',
             home:'Testview',
@@ -78,7 +82,7 @@ export default {
             home:'talkroom',
             query:{
                 msg:this.msg,
-                city:this.city
+                weixinnum:this.weixinnum
             }
           })
        } 
@@ -90,16 +94,41 @@ export default {
         }
      })
      .then((res)=>{
-      console.log(res)
       this.msg= res.data.xinxi.nickname,
       this.province = res.data.xinxi.prov,
       this.city = res.data.xinxi.city,
       this.sex = res.data.xinxi.sex,
       this.sign = res.data.xinxi.signature
+     
      })
      .catch((error)=>{
       console.log(error)
      })
+     this.$axios({
+                    url: "http://localhost:3000/relist",
+                    method: "post",
+                    data: qs.stringify({
+                      phone: localStorage.getItem("phone")
+                   })
+                 })
+               .then((res) => {
+                this.myFriendList = res.data.xinxi.friendList
+                console.log(this.myFriendList);
+                 if (!this.myFriendList.length){
+                     this.an1 = false
+                }
+          for (let i = 0, len = this.myFriendList.length; i < len; i++) {
+                   if (this.myFriendList[i].phone == this.weixinnum) {
+                         this.an = false
+                     }
+                     else{
+                      this.an1 = false
+                     }
+                    }
+               })
+            .catch((err) => {
+              console.log(err)
+             });
   }
 }
 </script>
