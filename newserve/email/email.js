@@ -8,7 +8,7 @@ var config = {
         port: 465,
         auth: {
             user: '1353920154@qq.com', //刚才注册的邮箱账号
-            pass: 'dsyvjuhsmgsbjdge'  //邮箱的授权码，不是注册时的密码
+            pass: 'tqxipqeiqsmbifbg'  //邮箱的授权码，不是注册时的密码
         }
     };
 

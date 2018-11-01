@@ -70,22 +70,27 @@ app.use(function(err, req, res, next) {
 });
 var psocket = {};
 io.on('connection', function(socket){
-  socket.on('setName',function (phone) {
+    socket.on('setName',function (phone) {
           if(!( psocket[phone] in psocket)){
           socket.phone = phone;
           psocket[phone] = socket.id;
+          socket.emit('user', psocket);
+
      }
-     socket.emit('user', psocket);
-      console.log(psocket)
+     socket.on('other', function (from,to,talkres) {
+      console.log('我是从'+from +'来，要发送到 '+to+"去，消息是"+talkres);
+      if(to in psocket){
+          socket.to(psocket[to]).emit('to'+to,{talkres:talkres,from:from,to:to});
+
+        }
+      });
      socket.on('private', function (from,to,msg) {
-        console.log(psocket[to])
-        console.log('我是从'+from +'来，要发送到 '+to+"去，消息是"+msg);
-        if(to in psocket){
+     if(to in psocket){
           socket.to(psocket[to]).emit('to'+to,{msg:msg,from:from,to:to});
         }
       });
     });
-    console.log('客户端连接成功 ');
+    console.log('客户端连接成功');
     socket.on('disconnect', function(){
         console.log('客户端连接失败'+socket.id);
     });

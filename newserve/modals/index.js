@@ -26,13 +26,22 @@ var userSchema=new Schema({
 		type:String,
 		default:'北京'
 	},
+	
 	city:{
 		type:String,
 		default:'北京'
 	},
 	requests:{
 		type:Array
-
+	},
+	friendList:{
+		type:Array
+	},
+	history:{
+		type:Array
+	},
+	talkList:{
+		type:Array
 	}
 });
 module.exports = db.model('User',userSchema);

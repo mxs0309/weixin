@@ -367,28 +367,128 @@ router.post('/xiugai', function(req, res, next) {
         })
     }
 });
-//获取好友请求信息列表
-// router.post('/relist', function(req, res, next) {
-//     let user = new User({
-//         phone: req.body.phone,
-//         quest:req.body.quest
-//     });
-//     User.findOne({ phone: req.body.phone }, function(err, doc) {
-//         if (err) {
-//             res.send({
-//                 data: false,
-//                 msg: "系统错误"
-//             });
-//         } else {
-//            res.send({
-//                 data: true,
-//                 msg: "查询成功",
-//                 list:doc
-//             });
+//查询
+router.post('/relist', function(req, res, next) {
+    let user = new User({
+        phone: req.body.phone,
+    });
+    User.findOne({ phone: req.body.phone }, function(err, doc) {
+        console.log(doc);
+        if (err) {
+            res.send({
+                data: false,
+                msg: "系统错误"
+            });
+        } else {
+           res.send({
+                data: true,
+                msg: "查询成功",
+                xinxi:doc
+            });
 
-//         }
-//     });
-// });
-//更新新数组到数据库
+        }
+    });
+});
+//存请求好友数据
+router.post('/updataReqfriend', function(req, res, next) {
+    let user = new User({
+        phone: req.body.phone,
+        newsz:JSON.parse(req.body.newsz)
+    });
+
+    User.update({ phone: req.body.phone },{requests:JSON.parse(req.body.newsz)}, function(err, doc) {
+        console.log(doc);
+         console.log(JSON.parse(req.body.newsz));
+        if (err) {
+            res.send({
+                data: false,
+                msg: "系统错误"
+            });
+        } else {
+           res.send({
+                data: true,
+                msg: "好友请求列表更新成功",
+                xinxi:doc
+            });
+
+        }
+    });
+});
+//存好友列表数组
+router.post('/updatafriendList', function(req, res, next) {
+    let user = new User({
+        phone: req.body.phone,
+        myList:JSON.parse(req.body.myList)
+    });
+
+    User.update({ phone: req.body.phone },{friendList:JSON.parse(req.body.myList)}, function(err, doc) {
+        console.log(doc);
+         console.log(JSON.parse(req.body.myList));
+        if (err) {
+            res.send({
+                data: false,
+                msg: "系统错误"
+            });
+        } else {
+           res.send({
+                data: true,
+                msg: "好友列表更新成功",
+                xinxi:doc
+            });
+
+        }
+    });
+});
+//存聊天记录
+router.post('/talkhistory', function(req, res, next) {
+    let user = new User({
+        phone: req.body.phone,
+        history:JSON.parse(req.body.array)
+    });
+
+    User.update({ phone: req.body.phone },{history:JSON.parse(req.body.array)}, function(err, doc) {
+        console.log(doc);
+         console.log(JSON.parse(req.body.array));
+        if (err) {
+            res.send({
+                data: false,
+                msg: "系统错误"
+            });
+        } else {
+           res.send({
+                data: true,
+                msg: "对话更新成功",
+                xinxi:doc
+            });
+
+        }
+    });
+});
+//聊天列表
+router.post('/talkList', function(req, res, next) {
+    let user = new User({
+        phone: req.body.phone,
+        talkList:JSON.parse(req.body.talkarray)
+    });
+
+    User.update({ phone: req.body.phone },{talkList:JSON.parse(req.body.talkarray)}, function(err, doc) {
+        console.log(doc);
+         console.log(JSON.parse(req.body.talkarray));
+        if (err) {
+            res.send({
+                data: false,
+                msg: "系统错误"
+            });
+        } else {
+           res.send({
+                data: true,
+                msg: "对话列表更新成功",
+                xinxi:doc
+            });
+
+        }
+    });
+});
+
 
 module.exports = router;
